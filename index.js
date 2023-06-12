@@ -27,13 +27,21 @@ app.delete("/:id", async (req, res) => {
 });
 
 app.put("/", async (req, res) => {
+  const { updatedRows } = req.body;
   try {
-    req.body.updatedRows.forEach(async (row) => {
-      await pool.query(
-        'UPDATE inventory SET "LOCATION A STOCK" = $1 WHERE id = $2',
-        [row["LOCATION A STOCK"], row.id]
-      );
-    });
+    for (let i = 0; i < updatedRows?.length; i++) {
+      if (updatedRows[i]["LOCATION A STOCK"] >= 0) {
+        await pool.query(
+          'UPDATE inventory SET "LOCATION A STOCK" = $1 WHERE id = $2',
+          [updatedRows[i]["LOCATION A STOCK"], updatedRows[i].id]
+        );
+      } else if (updatedRows[i]["LOC B STOCK"] >= 0) {
+        await pool.query(
+          'UPDATE inventory SET "LOC B STOCK" = $1 WHERE id = $2',
+          [updatedRows[i]["LOC B STOCK"], updatedRows[i].id]
+        );
+      }
+    }
     const response = await pool.query(
       `SELECT * FROM inventory ORDER BY id ASC`
     );
@@ -43,4 +51,10 @@ app.put("/", async (req, res) => {
   }
 });
 
-app.listen(5000, () => console.log("Server started on port 5000"));
+app.listen(8080, () => console.log("Server started on port 5000"));
+// req.body.updatedRows.forEach(async (row) => {
+//   await pool.query(
+//     'UPDATE inventory SET "LOCATION A STOCK" = $1, "LOC B STOCK" = $2 WHERE id = $3',
+//     [row["LOCATION A STOCK"], row["LOC B STOCK"], row.id]
+//   );
+// });

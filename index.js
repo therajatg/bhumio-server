@@ -51,10 +51,4 @@ app.put("/", async (req, res) => {
   }
 });
 
-app.listen(8080, () => console.log("Server started on port 5000"));
-// req.body.updatedRows.forEach(async (row) => {
-//   await pool.query(
-//     'UPDATE inventory SET "LOCATION A STOCK" = $1, "LOC B STOCK" = $2 WHERE id = $3',
-//     [row["LOCATION A STOCK"], row["LOC B STOCK"], row.id]
-//   );
-// });
+app.listen(8080, () => console.log("Server started on port 8080"));
